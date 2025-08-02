@@ -9,6 +9,7 @@ app.use(express.json());
 
 const RUNWAY_API_KEY = process.env.RUNWAY_API_KEY;
 const BASE_URL = 'https://api.runwayml.com/v2';
+const API_VERSION = '2024-05-01'; // ✅ REQUIRED to avoid "Invalid API Version" errors
 
 // POST /generate-video
 app.post('/generate-video', async (req, res) => {
@@ -23,7 +24,8 @@ app.post('/generate-video', async (req, res) => {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RUNWAY_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Version': API_VERSION
       },
       body: JSON.stringify({
         model: 'stability-ai/gen-2',
@@ -39,6 +41,7 @@ app.post('/generate-video', async (req, res) => {
     const createData = await createRes.json();
 
     if (!createRes.ok) {
+      console.error('Runway Create Error:', createData);
       return res.status(500).json({ error: createData.error || 'Failed to create generation task' });
     }
 
@@ -58,7 +61,8 @@ app.get('/video-status/:taskId', async (req, res) => {
   try {
     const statusRes = await fetch(`${BASE_URL}/tasks/${taskId}`, {
       headers: {
-        'Authorization': `Bearer ${RUNWAY_API_KEY}`
+        'Authorization': `Bearer ${RUNWAY_API_KEY}`,
+        'Version': API_VERSION
       }
     });
 
