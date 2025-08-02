@@ -20,7 +20,7 @@ app.post('/generate-video', async (req, res) => {
   }
 
   try {
-    const createRes = await fetch(`${BASE_URL}/tasks`, {
+    const createRes = await fetch(`${BASE_URL}/v1/models/stability-ai/gen-2/versions/<YOUR_VERSION_ID>/run`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RUNWAY_API_KEY}`,
