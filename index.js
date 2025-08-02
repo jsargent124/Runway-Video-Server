@@ -24,7 +24,7 @@ app.post('/generate-video', async (req, res) => {
       headers: {
         'Authorization': `Bearer ${RUNWAY_API_KEY}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json' // Added to handle API version requirements
+        'Accept': 'application/vnd.runwayml.v2+json'
       },
       body: JSON.stringify({
         model: 'stability-ai/gen-2',
@@ -40,8 +40,8 @@ app.post('/generate-video', async (req, res) => {
     const createData = await createRes.json();
 
     if (!createRes.ok) {
-      console.error('Runway Create Error:', createData);
-      return res.status(500).json({ error: createData.error || 'Failed to create generation task' });
+      console.error('❌ Create Task Error:', createData);
+      return res.status(500).json({ error: createData.error || 'Failed to create task' });
     }
 
     const taskId = createData.id;
@@ -54,7 +54,7 @@ app.post('/generate-video', async (req, res) => {
         const statusRes = await fetch(`${BASE_URL}/tasks/${taskId}`, {
           headers: {
             'Authorization': `Bearer ${RUNWAY_API_KEY}`,
-            'Accept': 'application/json'
+            'Accept': 'application/vnd.runwayml.v2+json'
           }
         });
 
@@ -68,7 +68,7 @@ app.post('/generate-video', async (req, res) => {
           throw new Error('Video generation failed.');
         }
 
-        console.log(`⏳ Status: ${statusData.status}`);
+        console.log(`⏳ Status [${i + 1}/24]: ${statusData.status}`);
       }
 
       throw new Error('Polling timeout — video not ready');
@@ -78,7 +78,7 @@ app.post('/generate-video', async (req, res) => {
     res.json({ message: 'Video ready!', result });
 
   } catch (error) {
-    console.error('Server Error:', error.message);
+    console.error('🔥 Server Error:', error.message);
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 });
