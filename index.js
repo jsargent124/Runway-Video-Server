@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 const RUNWAY_API_KEY = process.env.RUNWAY_API_KEY;
-const BASE_URL = 'https://api.runwayml.com/v2';
+const BASE_URL = 'https://api.runwayml.com/';
 const API_VERSION = '2024-05-01'; // ✅ REQUIRED to avoid "Invalid API Version" errors
 
 // POST /generate-video
